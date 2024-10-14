@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Product Details Scraper</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg,yellow, blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgb(215, 199, 167);
+            padding: 20px;
+            border-radius: 10px;
+            /* width: 80%; */
+            max-width: 600px;
+        }
+        img {
+            width: 200px; 
+            height: auto; 
+            align-items: center;
+        }
+        .link {
+            color: black;
+            font-size:35px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link:hover {
+            color: blue;
+        }
+        #output{
+            font-size:larger;
+            color: rgb(215, 199, 167);
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="containerd">
+    <div class="d-grid align-items-center justify-content-center">
+            <img src="./static/flipkart_logo.png" alt="flipkart logo">
+    </div>
+        <div class="container">
+            <a class="link" href="https://www.flipkart.com/"  target="_blank" title="Click this to open Flipkart website">Flipkart Product Details Scraper</a>
+            <form id="urlForm">
+                <div id="urlsContainer">
+                    <br>
+                    <label for="url"><b>Enter URL(s) for product(s):</b></label>
+                    <input type="text" name="url" required class="form-control my-1">
+                </div>
+                <div class="buttons d-grid align-items-center justify-content-center ">
+                    <div class="mx-auto">
+    
+                        <input class="btn btn-success m-2" type="button" value="Add URL" onclick="addURLField()">
+                        <input class="btn btn-danger m-2" type="button" value="Remove URL" onclick="removeURLField()">
+    
+                    </div>
+                    <div class="mx-auto">
+                        <input class= "btn btn-primary" type="submit" value="Get Product Details">
+                    </div>
+                </div>
+            </form>
+            <br>
+            <div id="output"></div>
+        </div>
+    </div>
+    <script>
+        function addURLField() {
+            const container = document.getElementById("urlsContainer");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = "url";
+            input.required = true;
+            input.classList.add("form-control", "my-1"); 
+            container.appendChild(input);
+        }
+        function removeURLField(){
+            const container = document.getElementById("urlsContainer");
+            const inputs = container.getElementsByTagName("input");
+            if (inputs.length > 1) {
+                container.removeChild(inputs[inputs.length - 1]);
+            }
+        }
+        document.getElementById("urlForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch("/get_product_details", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById("output").textContent = message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
